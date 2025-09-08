@@ -15,9 +15,17 @@
 
 #define DEBUGGING 0
 
-// Placeholder values while we do not have read numbers (most likely same as 24 car)
+// Placeholder values while we do not have real numbers (most likely same as 24 car)
 const int ocThreshold = 1; // Open Circuit threshold
 const int scThreshold = 2;  // Short Circuit threshold
+
+// Pin Configuration NOT REAL VALUES
+const int brake_switch_pin = 14;
+const int brake_out_pin = 2;
+const int error_out_pin = 9;
+const int rtds_horn_pin = 21;
+const int custom_pedal_pin = A14;
+
 
 // Class for the pedals contains how to read pedal positions and check Open Circuit and Short Circuit faults
 struct pedalSensor {
@@ -59,6 +67,28 @@ struct pedalSensor {
             return isShortCircuit;
         }
 }
+
+// Pedal sensor1 WRITE DOWN RIGHT OR LEFT WHEN WE FIGURE IT OUT also update values
+const pedalSensor p1 = {
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+};
+
+// Pedal sensor2 WRITE DOWN RIGHT OR LEFT WHEN WE FIGURE IT OUT also update values
+const pedalSensor p2 = {
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+};
+
+const pedals pedalSensor[] = [p1, p2];
 
 /* The devicetree node identifier for the "led0" alias. */
 
