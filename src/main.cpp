@@ -50,30 +50,6 @@ const pedalSensor p2 = {
     0
 };
 
-const pedalSensor[] pedals = [p1, p2];
-
-//******
-// This would be where pedal map was defined with old apps
-//  */
-
-// If sensors disagree by more than 10% for >100ms, fault.
-// DOUBLE CHECK RULES and if millis will work of if that needs a library
-bool pedalAgreementFault() {
-    static uint32_t faultTime = 0;
-    if (abs(pedalPercentage(p1) - pedalPercentage(p2)) > 0.1) { // maybe increase if p2 is being really screwy
-    if (faultTime == 0) { 
-        faultTime = millis() + 100; // time when apps should start faulting
-    } else if (faultTime <= millis()) {
-        return true;
-    }
-    } else {
-    faultTime = 0;
-  }
-  return false;
-}
-
-
-
 /* The devicetree node identifier for the "led0" alias. */
 
 /*
