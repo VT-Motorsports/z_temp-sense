@@ -13,8 +13,6 @@ struct PedalSensor{
     const int ocLedPin;
     const int scLedPin;
 
-    pedalSensor(int input, int zero, int full, int onLed, int ocLed, int scLed);
-
     float pedalPercentage();
     bool checkOpenCircuit();
     bool checkShortCircuit();
