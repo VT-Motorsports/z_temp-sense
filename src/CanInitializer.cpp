@@ -1,11 +1,9 @@
-#include <zephyr/device.h>
-#include <zephyr/devicetree.h>
-#include <zephyr/drivers/can.h>
-#include <zephyr/kernel.h>
-#include <zephyr/logging/log.h>
-#include <zephyr/types.h>
+#include "zephyr-common.h"
 
 LOG_MODULE_REGISTER(canInitializer, LOG_LEVEL_INF);
+
+
+
 
 namespace {
     constexpr int CAN1_BAUD = 1000000;         
@@ -44,6 +42,7 @@ uint8_t can_init() {
     enum can_state state;
     can_get_state(can1, &state,&can1err);
     if (state != CAN_STATE_STOPPED) {
+        LOG_INF("Stopping CAN1 to Configure Timing!");
         can_stop(can1);
         if (ret != 0) {
         LOG_ERR("can_stop() failed with code %d", ret);
@@ -85,7 +84,7 @@ uint8_t can_init() {
         .flags = 0, 
         .data = {0,1,2,3,4,5,6,7}
     }; 
-    
+
     can_send(can1,&msg_can1_status,K_MSEC(10),can_status_callback,nullptr); 
 
     LOG_INF("CAN1 initialization complete.");

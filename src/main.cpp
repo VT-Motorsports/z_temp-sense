@@ -1,32 +1,16 @@
-/*
- * Copyright (c) 2016 Intel Corporation
- *
- * SPDX-License-Identifier: Apache-2.0
- */
 #ifndef __cplusplus
 #error "__cplusplus not defined! Build system is compiling as C!"
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-#include <stdio.h>
-#include <sys/_intsup.h>
-#include <zephyr/device.h>
-#include <zephyr/devicetree.h>
-#include <zephyr/drivers/can.h>
-#include <zephyr/drivers/gpio.h>
-#include <zephyr/kernel.h>
-#include <zephyr/types.h>
-#ifdef __cplusplus
-}
-#endif
 
-#include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(main);
 
+
+#include "zephyr-common.h"
 #include "CanInitializer.h"
 // #include "PedalSensors.h"
+
+
+LOG_MODULE_REGISTER(main);
 
 /* 1000 msec = 1 sec */
 #define SLEEP_TIME_MS 1000
