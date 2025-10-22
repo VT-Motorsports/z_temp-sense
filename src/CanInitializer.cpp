@@ -1,5 +1,6 @@
 #include "zephyr-common.h"
 #include "globals.h"
+#include "zephyr/drivers/can.h"
 
 LOG_MODULE_REGISTER(canInitializer, LOG_LEVEL_INF);
 
@@ -11,10 +12,8 @@ namespace {
 }
 
 const struct device *can1; 
+CAN_MSGQ_DEFINE(can1_rx_test_msgq, 10);
 
-static void can_rx_callback(const struct device *dev, struct can_frame *frame, void *user_data) {
-    LOG_INF("Received CAN frame ID=0x%x DLC=%d", frame->id, frame->dlc);
-}
 
 static void can_status_callback(const struct device *dev, int error, void *user_data) {
     if (error) {
@@ -76,20 +75,6 @@ uint8_t can_init() {
         return static_cast<uint8_t>(ret);
     }
 
-    LOG_INF("Configuring default RX filter...");
-    const struct can_filter filter = {
-        .id = 0x000,
-        .mask = 0x000,
-        .flags = 0
-    };
-
-    int filter_id = can_add_rx_filter(can1, can_rx_callback, nullptr, &filter);
-    if (filter_id < 0) {
-        LOG_ERR("Failed to add RX filter: %d", filter_id);
-    } else {
-        LOG_INF("RX filter installed successfully (id=%d)", filter_id);
-    }
-
     struct can_frame msg_can1_status{
         .id = CAN1_STATUS_MSG_ID, 
         .dlc = can_bytes_to_dlc(8), 
@@ -97,8 +82,42 @@ uint8_t can_init() {
         .data = {0,1,2,3,4,5,6,7}
     }; 
 
-    can_send(can1,&msg_can1_status,K_MSEC(10),can_status_callback,nullptr); 
-
+    ret = can_send(can1, &msg_can1_status, K_MSEC(10), can_status_callback, nullptr);
+    if (ret < 0) {
+        LOG_ERR("Failed to send CAN frame: %d", ret);
+    }
     LOG_INF("CAN1 initialization complete.");
+
+    const struct can_filter match_all_rx = {
+        .id = 0x000,
+        .mask = 0x000,
+        .flags = 0
+    };
+
+    int test_msgq_id = can_add_rx_filter_msgq(can1, &can1_rx_test_msgq, &match_all_rx);
+    
+    if (test_msgq_id < 0) {
+        LOG_ERR("Failed to add RX MSGQ: %d", test_msgq_id);
+    } else {
+        LOG_INF("RX MSGQ installed successfully (id=%d)", test_msgq_id);
+        LOG_INF("Waiting to Recieve first Message"); 
+    }
+
+    struct can_frame rx_frame;
+    ret = k_msgq_get(&can1_rx_test_msgq, &rx_frame, K_FOREVER);
+    if (ret == 0) {
+        LOG_INF("Received first CAN frame:");
+        LOG_INF("  ID: 0x%x", rx_frame.id);
+        LOG_INF("  DLC: %d", rx_frame.dlc);
+        LOG_HEXDUMP_INF(rx_frame.data, can_dlc_to_bytes(rx_frame.dlc), "  Data:");
+    } else {
+        LOG_ERR("Failed to receive CAN frame (err=%d)", ret);
+    }
+
+
+    can_remove_rx_filter(can1,test_msgq_id); 
+    k_msgq_purge(&can1_rx_test_msgq); 
+    LOG_INF("Test MSGQ Destroyed, Filter Removed. CAN1 IS READY"); 
+
     return 0;
 }
