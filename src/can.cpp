@@ -23,7 +23,10 @@ void CanBus::can1_rx_isr(const struct device *dev, struct can_frame *frame, void
 
 void CanBus::can2_rx_isr(const struct device *dev, struct can_frame *frame, void *self_ptr)
 {
-    LOG_INF("can2callback");
+    CanBus *bus = static_cast<CanBus *>(self_ptr);
+    bus->frames_rec++;
+
+    LOG_INF("can1callback");
 }
 
 int CanBus::init(const struct device *dev, uint32_t bitrate, uint32_t sample_point)

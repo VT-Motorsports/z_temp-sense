@@ -3,6 +3,8 @@
 #include <zephyr/drivers/can.h>
 #include <zephyr/kernel.h>
 
+using frame_handler_t = void (*)(const struct can_frame *frame, volatile VehicleState *vehicle);
+
 class CanBus
 {
   private:
@@ -17,6 +19,8 @@ class CanBus
 
     static void can1_rx_isr(const struct device *dev, struct can_frame *frame, void *self_ptr);
     static void can2_rx_isr(const struct device *dev, struct can_frame *frame, void *self_ptr);
+
+    frame_handler_t bus_handlers[2048]{nullptr};
 
   public:
     CanBus(VehicleState *vehicle);
