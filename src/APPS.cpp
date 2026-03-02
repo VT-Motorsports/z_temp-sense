@@ -1,4 +1,7 @@
 #include "APPS.h"
+#include "dti_encoders.h"
+#include "vehicle_state.h"
+#include "zephyr/kernel.h"
 #include <zephyr/logging/log.h>
 
 LOG_MODULE_REGISTER(APPS, LOG_LEVEL_INF);
@@ -74,7 +77,23 @@ void APPSTask::run()
     }
     else
     {
-        hardware_->can1.send(const struct can_frame *frame, k_timeout_t timeout)
+        int16_t cmd = static_cast<int16_t>(apps.commandedTorquePercentage * vehicle()->INVERTERS[0].max_ac_current_x10);
+
+        for (Corner c = FRONT_LEFT; c < NUM_CORNERS; c = static_cast<Corner>(1 + static_cast<int>(c)))
+        {
+            vehicle()->INVERTERS[c].cmd_drive_enable = apps.faulted ? 0u : 1u;
+            vehicle()->INVERTERS[c].cmd_ac_current = cmd;
+        }
+
+        struct can_frame tq_command_packed_0x01{};
+        encode_dti_fl_set_ac_current(&tq_command_packed_0x01, vehicle());
+        hardware_->can1.send(&tq_command_packed_0x01, K_MSEC(1));
+        encode_dti_fr_set_ac_current(&tq_command_packed_0x01, vehicle());
+        hardware_->can1.send(&tq_command_packed_0x01, K_MSEC(1));
+        encode_dti_rl_set_ac_current(&tq_command_packed_0x01, vehicle());
+        hardware_->can1.send(&tq_command_packed_0x01, K_MSEC(1));
+        encode_dti_rr_set_ac_current(&tq_command_packed_0x01, vehicle());
+        hardware_->can1.send(&tq_command_packed_0x01, K_MSEC(1));
     }
 }
 
