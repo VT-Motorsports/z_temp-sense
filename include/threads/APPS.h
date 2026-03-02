@@ -1,7 +1,7 @@
 #pragma once
 
 #include "hardware.h"
-#include "periodic_task.h"
+#include "threads/periodic_task.h"
 #include "vehicle_state.h"
 
 class APPSTask : public PeriodicTask<APPSTask>

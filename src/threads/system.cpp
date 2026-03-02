@@ -1,4 +1,4 @@
-#include "system.h"
+#include "threads/system.h"
 #include <zephyr/logging/log.h>
 
 LOG_MODULE_REGISTER(system, LOG_LEVEL_INF);

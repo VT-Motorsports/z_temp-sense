@@ -1,5 +1,5 @@
-#include "APPS.h"
-#include "dti_encoders.h"
+#include "threads/APPS.h"
+#include "can_decoders/dti_encoders.h"
 #include "vehicle_state.h"
 #include "zephyr/kernel.h"
 #include <zephyr/logging/log.h>

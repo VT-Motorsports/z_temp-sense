@@ -1,9 +1,9 @@
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 
-#include "APPS.h"
+#include "threads/APPS.h"
 #include "hardware.h"
-#include "system.h"
+#include "threads/system.h"
 #include "vehicle_state.h"
 
 LOG_MODULE_REGISTER(main);

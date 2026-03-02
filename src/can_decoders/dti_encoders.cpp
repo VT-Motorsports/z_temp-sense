@@ -4,7 +4,7 @@
 // Reference: DTI CAN Manual V2.5
 // Byte order: Big Endian (Motorola), unused bytes = 0x00
 
-#include "dti_encoders.h"
+#include "can_decoders/dti_encoders.h"
 #include <string.h>
 
 // ============================================================================
