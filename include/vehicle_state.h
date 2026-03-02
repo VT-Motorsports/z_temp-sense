@@ -155,6 +155,7 @@ struct APPS_data
     float commandedTorquePercentage;
     float pedal1_percent;
     float pedal2_percent;
+    static const bool torqueVectoringEnabled = false;
 };
 
 // struct that provides access to sub  Interface structs that house publicly accessible data to whole program.
