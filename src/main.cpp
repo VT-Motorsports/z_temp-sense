@@ -11,7 +11,7 @@ LOG_MODULE_REGISTER(main);
 
 int main(void)
 {
-    LOG_INF("***VCU ENTERED MAIN***");
+    LOG_INF("***ATS ENTERED MAIN***");
 
     static VehicleState vehicle;
     static Hardware hardware(&vehicle);

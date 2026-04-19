@@ -1,31 +1,28 @@
 // zephyr_adc.h
 #pragma once
-#include <zephyr/drivers/adc.h>
+#include <zephyr/drivers/spi.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/device.h>
 
-class AdcChannel
+struct AD7708Config {
+    struct spi_dt_spec spi;
+    struct gpio_dt_spec drdy;
+    struct gpio_dt_spec reset;
+};
+
+class AD7708
 {
   private:
-    const struct device *adc_dev_;
-    struct adc_channel_cfg channel_cfg_;
-    struct adc_sequence sequence_;
-    int16_t buffer_[1];
-    uint8_t channel_id_;
-    int resolution_;
-    float vref_;
-
-    // Voltage divider: 3.3k top, 6.8k bottom
-    static constexpr float DIVIDER_RATIO = (3.3f + 6.8f) / 6.8f; // 1.485
-    static constexpr size_t BUFFER_SIZE = sizeof(buffer_);
+    int reset();
+    int write_reg(uint8_t reg, uint8_t value);
+    int read_reg(uint8_t reg, uint8_t *value);
+    int wait_data_ready();
+    const AD7708Config *config_;
 
   public:
-    AdcChannel();
+    explicit AD7708(const AD7708Config *config);
+    int init();
+    int read_raw(uint8_t channel, int32_t *sample);
 
-    int init(const struct device *adc_dev, uint8_t channel_id, int resolution = 12, float vref = 3.3f);
 
-    float read_voltage();
-    int16_t read_raw();
-    float get_divider_ratio();
-
-    // For testing
-    void set_test_voltage(float voltage);
 };

@@ -7,15 +7,15 @@
 /* Base STM32H753 SoC description. */
 #include <st/h7/stm32h753Xi.dtsi>
 /* STM32H753 pinmux labels used by pinctrl-0 entries below. */
-#include <st/h7/stm32h753zitx-pinctrl.dtsi>
+#include <st/h7/stm32h753vitx-pinctrl.dtsi>
 /* STM32 pinmux helper macros used for custom SPI4 pin definitions below. */
 #include <zephyr/dt-bindings/pinctrl/stm32-pinctrl.h>
 
 / {
 	/* Human-readable board identification shown in generated metadata. */
 	model = "ATS STM32H753 Board";
-	/* Board/SoC compatibility string used by Zephyr bindings. */
-	compatible = "st,stm32h753vi";
+	/* Board-specific compatible, followed by the STM32H753VI SoC family. */
+	compatible = "vnd,ats-stm32", "st,stm32h753vi";
 
 	/* Default system resources Zephyr should bind to at boot. */
 	chosen {
@@ -38,13 +38,13 @@
 	 * device on its SPI bus and chip select is handled externally in hardware.
 	 */
 	aliases {
-		adc_spi1 = &ADC_1;
-		adc_spi2 = &ADC_2;
-		adc_spi3 = &ADC_3;
-		adc1_disable = &adc1_disable;
-		adc2_disable = &adc2_disable;
-		adc3_disable = &adc3_disable;
-		i2c_irq = &HallEffect_1;
+		adc-spi1 = &ADC_1;
+		adc-spi2 = &ADC_2;
+		adc-spi3 = &ADC_3;
+		adc1-disable = &adc1_disable;
+		adc2-disable = &adc2_disable;
+		adc3-disable = &adc3_disable;
+		i2c-irq = &HallEffect_1;
 	};
 
 	/* Named board-level GPIO resources that application code can look up. */
